@@ -118,6 +118,10 @@ class LogStash::Outputs::Mongodb < LogStash::Outputs::Base
         # If the duplicate key error is on another field, we have no way
         # to fix the issue.
         @logger.warn("Skipping insert because of a duplicate key error", :event => event, :exception => e)
+      elsif e.message =~ /IOError/
+        @logger.warn("IOError. Try reconnect now.", :event => event, :exception => e)
+        register
+        retry
       else
         @logger.warn("Failed to send event to MongoDB, retrying in #{@retry_delay.to_s} seconds", :event => event, :exception => e)
         sleep(@retry_delay)
