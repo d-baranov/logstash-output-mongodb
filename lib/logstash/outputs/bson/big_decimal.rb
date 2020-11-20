@@ -43,13 +43,13 @@ module BSON
       # @param [ BSON ] bson object from Mongo.
       # @return [ BigDecimal ] The decoded BigDecimal.
       # @see http://bsonspec.org/#/specification
-      def from_bson(bson)
+      def from_bson(bson, validating_keys = Config.validating_keys?)
         from_bson_double(bson.get_bytes(8))
       end
 
       private
 
-      def from_bson_double(double)
+      def from_bson_double(double, validating_keys = Config.validating_keys?)
         new(double.unpack(PACK).first.to_s)
       end
     end
